@@ -1,12 +1,13 @@
 import streamlit as st
 import requests
+from datetime import datetime
 
+# Page setup
 st.set_page_config(page_title="AI Hiring System", layout="centered")
 st.title("🤖 AI Hiring Intelligence System")
-st.markdown(
-    "Automated resume screening system using AI and NLP similarity scoring.")
+st.markdown("Automated resume screening system using AI and NLP.")
 
-# --- Candidate Analysis ---
+# Candidate Analysis Section
 st.header("Candidate Analysis")
 
 name = st.text_input("Candidate Name")
@@ -18,38 +19,34 @@ if st.button("Analyze Candidate"):
         st.warning("Please fill all fields!")
     else:
         with st.spinner("Analyzing candidate..."):
-            try:
-                response = requests.post(
-                    "http://127.0.0.1:8000/analyze",
-                    json={
-                        "name": name,
-                        "resume_text": resume_text,
-                        "job_description": job_desc
-                    }
-                )
-                data = response.json()
+            response = requests.post(
+                "http://127.0.0.1:8000/analyze",
+                json={
+                    "name": name,
+                    "resume_text": resume_text,
+                    "job_description": job_desc
+                }
+            )
 
-                score = round(data['match_score'], 2)
-                exp = data['experience']
-
-                st.success(f"✅ Match Score: **{score}%**")
-                st.progress(score/100)
-                st.info(f"🧑‍💼 Estimated Experience: **{exp} years**")
-            except:
-                st.error(
-                    "Could not connect to backend. Make sure backend is running.")
+        if response.status_code == 200:
+            data = response.json()
+            st.success(f"✅ Match Score: **{round(data['match_score'],2)}%**")
+            st.info(f"🧑‍💼 Estimated Experience: **{data['experience']} years**")
+        else:
+            st.error("Something went wrong while analyzing.")
 
 st.markdown("---")
 
-# --- View All Candidates ---
+# View All Candidates Section
 st.header("All Candidates")
 if st.button("Refresh Candidate List"):
-    try:
-        response = requests.get("http://127.0.0.1:8000/candidates")
+    response = requests.get("http://127.0.0.1:8000/candidates")
+    if response.status_code == 200:
         candidates = response.json()
         if candidates:
+            # Convert list of dicts to a table
             st.table(candidates)
         else:
-            st.info("No candidates yet.")
-    except:
-        st.error("Could not fetch candidates. Make sure backend is running.")
+            st.info("No candidates found yet.")
+    else:
+        st.error("Failed to fetch candidates.")
