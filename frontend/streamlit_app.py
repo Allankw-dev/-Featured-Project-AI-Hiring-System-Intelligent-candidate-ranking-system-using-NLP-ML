@@ -40,7 +40,7 @@ st.markdown("---")
 # View All Candidates Section
 st.header("All Candidates")
 if st.button("Refresh Candidate List"):
-    response = requests.get("http://127.0.0.1:8000/candidates")
+    response = requests.get("https://ai-hiring-system-1-9mi9.onrender.com")
     if response.status_code == 200:
         candidates = response.json()
         if candidates:
