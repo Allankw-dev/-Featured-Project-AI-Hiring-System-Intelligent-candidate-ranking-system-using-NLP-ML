@@ -1,7 +1,7 @@
 import requests
 import streamlit as st
 
-API_BASE_URL = "http://127.0.0.1:8020"
+API_BASE_URL = "http://127.0.0.1:8010"
 REQUEST_TIMEOUT = 10
 
 
