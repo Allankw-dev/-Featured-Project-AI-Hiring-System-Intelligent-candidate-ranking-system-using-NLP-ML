@@ -33,7 +33,7 @@ The system uses **Natural Language Processing techniques** to compare resumes wi
 
 ## 🏗 System Architecture
 
-Frontend (Streamlit UI)
+Frontend (Streamlit UI).
 ↓
 FastAPI Backend
 ↓
