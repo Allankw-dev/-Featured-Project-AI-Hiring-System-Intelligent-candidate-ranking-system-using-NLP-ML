@@ -2,7 +2,7 @@
 .
 An AI-powered hiring assistant that analyzes candidate resumes against job descriptions and calculates a compatibility score using Natural Language Processing (NLP).
 
-This system simulates how modern Applicant Tracking Systems (ATS) help recruiters quickly evaluate candidates by analyzing resumes, estimating experience, and ranking applicants based on relevance to a job description.
+This system simulates how modern Applicant Tracking Systems (ATS) help recruiters quickly evaluate candidates by analyzing resumes, estimating experience, and ranking applicants based on relevance to a job description..
 
 ---
 
