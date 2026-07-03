@@ -1,5 +1,5 @@
 fastapi
-uvicorn
+uvicorn[standard]
 sqlalchemy
 psycopg2-binary
 python-jose[cryptography]
@@ -11,3 +11,8 @@ pydantic
 pydantic-settings
 scikit-learn
 pdfplumber
+slowapi
+bleach
+python-dotenv
+resend
+httpx
