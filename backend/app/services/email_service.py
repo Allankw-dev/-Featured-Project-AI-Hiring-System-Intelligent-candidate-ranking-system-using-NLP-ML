@@ -18,3 +18,18 @@ def send_reset_email(recipient_email: str, reset_link: str):
             <p>If you did not request this, you can safely ignore this email.</p>
         """
     })
+def send_admin_email(subject: str, message: str, recipient_email: str = None):
+    """
+    Send a notification email to the admin.
+    If recipient_email is not provided, falls back to settings.ADMIN_EMAIL.
+    """
+    to_address = recipient_email or settings.ADMIN_EMAIL
+
+    resend.Emails.send({
+        "from": "AI Hiring System <onboarding@resend.dev>",  # or your verified domain
+        "to": [to_address],
+        "subject": subject,
+        "html": f"""
+            <p>{message}</p>
+        """
+    })
