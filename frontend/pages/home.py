@@ -395,7 +395,7 @@ def render():
     </script>
     </body>
     </html>
-    """, height=2200, scrolling=False)
+    """, height=1800, scrolling=False)
 
     if result and isinstance(result, str):
         st.session_state.page = result
