@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+import bleach
 
 from app.core.dep import get_db, get_current_user
 from app.models.job import Job
@@ -7,6 +8,13 @@ from app.models.user import User
 from app.schemas.job import JobCreate
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
+
+
+def sanitize(text: str) -> str:
+    """Remove any malicious HTML/scripts from input"""
+    if not text:
+        return text
+    return bleach.clean(text.strip(), strip=True)
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
@@ -22,10 +30,10 @@ def create_job(
         )
 
     job = Job(
-        title=payload.title,
-        company=payload.company,
-        description=payload.description,
-        required_skills=payload.required_skills,
+        title=sanitize(payload.title),
+        company=sanitize(payload.company),
+        description=sanitize(payload.description),
+        required_skills=sanitize(payload.required_skills),
         min_experience=payload.min_experience,
         created_by=current_user.id
     )
@@ -73,10 +81,10 @@ def update_job(
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
 
-    job.title = payload.title
-    job.company = payload.company
-    job.description = payload.description
-    job.required_skills = payload.required_skills
+    job.title = sanitize(payload.title)
+    job.company = sanitize(payload.company)
+    job.description = sanitize(payload.description)
+    job.required_skills = sanitize(payload.required_skills)
     job.min_experience = payload.min_experience
 
     db.commit()
