@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta, timezone
 import secrets
+import os
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 
@@ -11,6 +12,8 @@ from app.models.user import User
 from app.services.email_service import send_reset_email
 
 router = APIRouter(prefix="/password", tags=["Password Reset"])
+
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://ai-powered-hiring-system.streamlit.app")
 
 
 class ForgotPasswordRequest(BaseModel):
@@ -23,7 +26,11 @@ class ResetPasswordRequest(BaseModel):
 
 
 @router.post("/forgot")
-def forgot_password(payload: ForgotPasswordRequest, db: Session = Depends(get_db)):
+def forgot_password(
+    payload: ForgotPasswordRequest,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+):
     user = db.query(User).filter(User.email == payload.email).first()
 
     if user:
@@ -34,8 +41,8 @@ def forgot_password(payload: ForgotPasswordRequest, db: Session = Depends(get_db
         user.reset_token_expiry = expiry
         db.commit()
 
-        reset_link = f"http://localhost:8501/?reset_token={token}"
-        send_reset_email(user.email, reset_link)
+        reset_link = f"{FRONTEND_URL}/?reset_token={token}"
+        background_tasks.add_task(send_reset_email, user.email, reset_link)
 
     return {
         "message": "If an account with that email exists, a reset link has been sent."
