@@ -305,10 +305,23 @@ def render():
             const h = document.body.scrollHeight;
             window.parent.postMessage({type: 'streamlit:setFrameHeight', height: h}, '*');
         }
+
+        // Fire once web fonts (Orbitron / Exo 2) have actually loaded —
+        // late font swaps were reflowing text after the old fixed timers ran,
+        // which is why the page kept a big stale gap at the bottom.
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(sendHeight);
+        }
+
+        // Keep watching for any further layout shifts and correct height live.
+        const resizeObserver = new ResizeObserver(() => sendHeight());
+        resizeObserver.observe(document.body);
+
         window.addEventListener('load', sendHeight);
         window.addEventListener('resize', sendHeight);
         setTimeout(sendHeight, 300);
         setTimeout(sendHeight, 800);
+        setTimeout(sendHeight, 1500);
 
         // ── PARTICLE ANIMATION ──
         const canvas = document.getElementById('c');
@@ -382,7 +395,7 @@ def render():
     </script>
     </body>
     </html>
-    """, height=4500, scrolling=False)
+    """, height=2200, scrolling=False)
 
     if result and isinstance(result, str):
         st.session_state.page = result
