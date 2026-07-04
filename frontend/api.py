@@ -103,6 +103,8 @@ def create_job(title, company, description, required_skills, min_experience):
         },
         timeout=REQUEST_TIMEOUT
     )
+
+
 def update_job(job_id, title, company, description, required_skills, min_experience):
     return requests.put(
         f"{API_BASE_URL}/jobs/{job_id}",
@@ -116,6 +118,7 @@ def update_job(job_id, title, company, description, required_skills, min_experie
         },
         timeout=REQUEST_TIMEOUT
     )
+
 
 def delete_job(job_id):
     return requests.delete(
@@ -181,7 +184,7 @@ def top_candidates():
 
 def shortlist_candidate(application_id):
     return requests.post(
-        f"{API_BASE_URL}/admin/shortlist/{application_id}",
+        f"{API_BASE_URL}/admin/applications/{application_id}/shortlist",
         headers=get_headers(),
         timeout=REQUEST_TIMEOUT
     )
@@ -189,7 +192,7 @@ def shortlist_candidate(application_id):
 
 def reject_candidate(application_id):
     return requests.post(
-        f"{API_BASE_URL}/admin/reject/{application_id}",
+        f"{API_BASE_URL}/admin/applications/{application_id}/reject",
         headers=get_headers(),
         timeout=REQUEST_TIMEOUT
     )
@@ -233,7 +236,7 @@ def update_my_profile(full_name, email):
 
 def upload_profile_picture(file):
     return requests.post(
-        f"{API_BASE_URL}/profile/me/upload-picture",
+        f"{API_BASE_URL}/users/me/upload-picture",
         headers=get_headers_without_content_type(),
         files={"file": (file.name, file, file.type)},
         timeout=REQUEST_TIMEOUT

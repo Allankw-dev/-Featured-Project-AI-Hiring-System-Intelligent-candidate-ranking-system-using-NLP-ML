@@ -42,20 +42,28 @@ def apply_to_job(
                 detail="You have already applied for this job with this resume"
             )
 
-        _status, _flags, verification_score = basic_resume_verification(resume.parsed_text)
+        # ── VERIFICATION ──
+        _status, _flags, verification_score = basic_resume_verification(resume.parsed_text or "")
 
+        # ── AI SCORING ──
         result = calculate_match(
-            job_desc=job.description,
-            resume_text=resume.parsed_text,
+            job_desc=job.description or "",
+            resume_text=resume.parsed_text or "",
             verification_score=verification_score
         )
 
+        # ── SAVE ALL SCORES ──
         application = Application(
             user_id=current_user.id,
             job_id=job.id,
             resume_id=resume.id,
-            ai_score=result["overall_score"],
-            status="submitted"
+            status="submitted",
+            ai_score=result.get("overall_score", 0),
+            overall_score=result.get("overall_score", 0),
+            semantic_score=result.get("semantic_score", 0),
+            skills_score=result.get("skills_score", 0),
+            experience_score=result.get("experience_score", 0),
+            verification_score=verification_score,
         )
 
         db.add(application)
@@ -66,6 +74,11 @@ def apply_to_job(
             "application_id": application.id,
             "job_id": job.id,
             "resume_id": resume.id,
+            "overall_score": application.overall_score,
+            "semantic_score": application.semantic_score,
+            "skills_score": application.skills_score,
+            "experience_score": application.experience_score,
+            "verification_score": application.verification_score,
             "ai_score": application.ai_score,
             "status": application.status
         }
