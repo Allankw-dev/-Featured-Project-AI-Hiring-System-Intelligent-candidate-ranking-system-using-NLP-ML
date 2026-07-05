@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 
 from app.core.dep import get_db, require_admin
@@ -42,22 +42,28 @@ def top_candidates(db: Session = Depends(get_db), current_user=Depends(require_a
 
 
 @router.post("/applications/{application_id}/shortlist")
-def shortlist_candidate(application_id: int, db: Session = Depends(get_db), current_user=Depends(require_admin)):
+def shortlist_candidate(
+    application_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(require_admin)
+):
     application = db.query(Application).filter(Application.id == application_id).first()
     if not application:
         raise HTTPException(status_code=404, detail="Application not found")
-
     application.status = "shortlisted"
     db.commit()
     return {"message": "Candidate shortlisted successfully"}
 
 
 @router.post("/applications/{application_id}/reject")
-def reject_candidate(application_id: int, db: Session = Depends(get_db), current_user=Depends(require_admin)):
+def reject_candidate(
+    application_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(require_admin)
+):
     application = db.query(Application).filter(Application.id == application_id).first()
     if not application:
         raise HTTPException(status_code=404, detail="Application not found")
-
     application.status = "rejected"
     db.commit()
     return {"message": "Candidate rejected successfully"}
@@ -66,6 +72,7 @@ def reject_candidate(application_id: int, db: Session = Depends(get_db), current
 @router.post("/send-email")
 def send_email_to_candidate(
     payload: CandidateEmailRequest,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user=Depends(require_admin)
 ):
@@ -79,12 +86,15 @@ def send_email_to_candidate(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    send_admin_email(
+    # ── Send email in background so frontend doesn't timeout ──
+    background_tasks.add_task(
+        send_admin_email,
         recipient_email=user.email,
         subject=payload.subject,
         message_body=payload.message_body
     )
 
+    # ── Log immediately without waiting for email ──
     log = EmailLog(
         application_id=application.id,
         recipient_email=user.email,
