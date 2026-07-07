@@ -265,6 +265,11 @@ if "user_email" not in st.session_state:
 if "page" not in st.session_state:
     st.session_state.page = "Home"
 
+# ── AUTO DETECT RESET TOKEN FROM URL ──
+reset_token = st.query_params.get("reset_token", "")
+if reset_token and st.session_state.page != "Reset Password":
+    st.session_state.page = "Reset Password"
+
 # ---------------------------
 # HELPERS
 # ---------------------------
