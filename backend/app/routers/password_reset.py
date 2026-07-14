@@ -2,9 +2,11 @@ from datetime import datetime, timedelta, timezone
 import secrets
 import os
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, status
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.core.dep import get_db
 from app.core.security import hash_password
@@ -12,6 +14,7 @@ from app.models.user import User
 from app.services.email_service import send_reset_email
 
 router = APIRouter(prefix="/password", tags=["Password Reset"])
+limiter = Limiter(key_func=get_remote_address)
 
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://ai-powered-hiring-system.streamlit.app")
 
@@ -26,7 +29,9 @@ class ResetPasswordRequest(BaseModel):
 
 
 @router.post("/forgot")
+@limiter.limit("3/minute")
 def forgot_password(
+    request: Request,
     payload: ForgotPasswordRequest,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
@@ -34,6 +39,12 @@ def forgot_password(
     user = db.query(User).filter(User.email == payload.email).first()
 
     if user:
+        # ── Block password reset for admin accounts ──
+        if user.role == "admin":
+            return {
+                "message": "If an account with that email exists, a reset link has been sent."
+            }
+
         token = secrets.token_urlsafe(32)
         expiry = datetime.now(timezone.utc) + timedelta(hours=1)
 
@@ -50,13 +61,25 @@ def forgot_password(
 
 
 @router.post("/reset")
-def reset_password(payload: ResetPasswordRequest, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def reset_password(
+    request: Request,
+    payload: ResetPasswordRequest,
+    db: Session = Depends(get_db)
+):
     user = db.query(User).filter(User.reset_token == payload.token).first()
 
     if not user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid reset token"
+        )
+
+    # ── Block admin password reset ──
+    if user.role == "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin password cannot be reset this way"
         )
 
     expiry = user.reset_token_expiry
@@ -79,7 +102,6 @@ def reset_password(payload: ResetPasswordRequest, db: Session = Depends(get_db))
     user.password_hash = hash_password(payload.new_password)
     user.reset_token = None
     user.reset_token_expiry = None
-
     db.commit()
 
     return {"message": "Password reset successfully"}
