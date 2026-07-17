@@ -3,6 +3,12 @@ import streamlit.components.v1 as components
 
 
 def render():
+    # ── HANDLE NAVIGATION FROM IFRAME ──
+    nav_target = st.query_params.get("nav", "")
+    if nav_target:
+        st.query_params.clear()
+        st.session_state.page = nav_target
+        st.rerun()
 
     result = components.html("""
     <!DOCTYPE html>
@@ -95,10 +101,11 @@ def render():
         .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
         .btn {
-            padding: 12px 20px; border-radius: 10px; border: none;
+            padding: 14px 20px; border-radius: 10px; border: none;
             font-family: 'Exo 2', sans-serif; font-size: 14px; font-weight: 700;
             cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
-            white-space: nowrap;
+            white-space: nowrap; text-decoration: none; display: block;
+            text-align: center;
         }
 
         .btn-primary {
@@ -169,7 +176,7 @@ def render():
         .step {
             text-align: center; padding: 20px 12px;
             background: rgba(4,6,22,0.85); border: 1px solid rgba(139,92,246,0.2);
-            border-radius: 14px; transition: all 0.3s; backdrop-filter: blur(12px);
+            border-radius: 14px; transition: all 0.3s;
         }
 
         .step:hover { border-color:rgba(139,92,246,.4); transform:translateY(-4px); }
@@ -186,7 +193,6 @@ def render():
             padding: 22px 18px; background: rgba(4,6,22,0.85);
             border: 1px solid rgba(139,92,246,0.2); border-radius: 16px;
             position: relative; overflow: hidden; transition: all 0.3s;
-            backdrop-filter: blur(12px);
         }
 
         .feature-card::before { content:''; position:absolute; top:0; left:0; right:0; height:1.5px; background:linear-gradient(90deg,transparent,rgba(139,92,246,.5),transparent); }
@@ -199,7 +205,7 @@ def render():
             background: radial-gradient(ellipse at center, rgba(139,92,246,0.15) 0%, transparent 70%);
             border: 1px solid rgba(139,92,246,0.3); border-radius: 24px;
             padding: 40px; text-align: center; position: relative; overflow: hidden;
-            backdrop-filter: blur(12px); margin-bottom: 8px;
+            margin-bottom: 8px;
         }
 
         .cta-wrapper::before { content:''; position:absolute; top:0; left:0; right:0; height:1.5px; background:linear-gradient(90deg,transparent,#8b5cf6,#60a5fa,transparent); }
@@ -243,8 +249,8 @@ def render():
                     <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">AI Active</div></div>
                 </div>
                 <div class="btn-row">
-                    <button class="btn btn-primary" onclick="navigate('Sign Up')">🚀 Get Started — Free</button>
-                    <button class="btn btn-secondary" onclick="navigate('Login')">🔐 Login</button>
+                    <a class="btn btn-primary" href="?nav=Sign Up" target="_top">🚀 Get Started — Free</a>
+                    <a class="btn btn-secondary" href="?nav=Login" target="_top">🔐 Login</a>
                 </div>
             </div>
 
@@ -288,32 +294,23 @@ def render():
             <div class="cta-title">Ready to Transform Your Hiring?</div>
             <div class="cta-text">Join the future of recruitment. Set up in minutes, hire better forever.</div>
             <div class="cta-btn-row">
-                <button class="btn btn-primary" onclick="navigate('Sign Up')">🚀 Create Free Account</button>
-                <button class="btn btn-secondary" onclick="navigate('Login')">🔐 Sign In</button>
-                <button class="btn btn-secondary" onclick="navigate('Jobs')">💼 Browse Jobs</button>
+                <a class="btn btn-primary" href="?nav=Sign Up" target="_top">🚀 Create Free Account</a>
+                <a class="btn btn-secondary" href="?nav=Login" target="_top">🔐 Sign In</a>
+                <a class="btn btn-secondary" href="?nav=Jobs" target="_top">💼 Browse Jobs</a>
             </div>
         </div>
     </div>
 
     <script>
-        function navigate(page) {
-            window.parent.postMessage({type: 'streamlit:setComponentValue', value: page}, '*');
-        }
-
-        // ── AUTO-RESIZE iframe to full content height ──
         function sendHeight() {
             const h = document.body.scrollHeight;
             window.parent.postMessage({type: 'streamlit:setFrameHeight', height: h}, '*');
         }
 
-        // Fire once web fonts (Orbitron / Exo 2) have actually loaded —
-        // late font swaps were reflowing text after the old fixed timers ran,
-        // which is why the page kept a big stale gap at the bottom.
         if (document.fonts && document.fonts.ready) {
             document.fonts.ready.then(sendHeight);
         }
 
-        // Keep watching for any further layout shifts and correct height live.
         const resizeObserver = new ResizeObserver(() => sendHeight());
         resizeObserver.observe(document.body);
 
@@ -323,7 +320,6 @@ def render():
         setTimeout(sendHeight, 800);
         setTimeout(sendHeight, 1500);
 
-        // ── PARTICLE ANIMATION ──
         const canvas = document.getElementById('c');
         const ctx = canvas.getContext('2d');
 
@@ -396,7 +392,3 @@ def render():
     </body>
     </html>
     """, height=1800, scrolling=False)
-
-    if result and isinstance(result, str):
-        st.session_state.page = result
-        st.rerun()
