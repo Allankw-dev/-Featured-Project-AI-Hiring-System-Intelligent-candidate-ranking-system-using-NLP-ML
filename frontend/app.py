@@ -221,6 +221,15 @@ if reset_token and st.session_state.page != "Reset Password":
     st.session_state.page = "Reset Password"
 
 # ---------------------------
+# NAV FROM HOME IFRAME
+# ---------------------------
+nav_target = st.query_params.get("nav", "")
+if nav_target:
+    st.query_params.clear()
+    st.session_state.page = nav_target
+    st.rerun()
+
+# ---------------------------
 # HELPERS
 # ---------------------------
 def is_logged_in():
@@ -506,19 +515,6 @@ st.markdown("""
 <script>
 let aiIsOpen = false;
 let aiHistory = [];
-
-const AI_SYSTEM = `You are Hira, an AI assistant for an AI-powered hiring platform. You help both candidates and admins.
-
-PLATFORM DETAILS:
-- Built with FastAPI backend, Streamlit frontend, PostgreSQL on Supabase
-- AI scoring weights: Semantic 45%, Skills 25%, Experience 20%, Verification 10%
-- Features: Resume upload (PDF), AI scoring, job matching, fraud detection, admin panel
-- Fraud detection: keyword stuffing, inconsistent dates, short resumes, missing contact info
-- Candidates: sign up, upload resumes, apply for jobs, track applications in dashboard
-- Admins: post/edit/delete jobs, view top 20 candidates, shortlist/reject, send emails
-
-Be helpful, concise, friendly and accurate. Answer ANY question asked.
-Keep responses under 200 words unless more detail is genuinely needed.`;
 
 async function aiCallClaude(message) {
     aiHistory.push({ role: "user", content: message });
