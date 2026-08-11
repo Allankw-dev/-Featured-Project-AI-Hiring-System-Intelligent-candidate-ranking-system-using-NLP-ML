@@ -523,18 +523,16 @@ Keep responses under 200 words unless more detail is genuinely needed.`;
 async function aiCallClaude(message) {
     aiHistory.push({ role: "user", content: message });
     try {
-        const res = await fetch("https://api.anthropic.com/v1/messages", {
+        const res = await fetch("https://ai-powered-hiring-system-using-fastapi-c1ya.onrender.com/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                model: "claude-sonnet-4-6",
-                max_tokens: 1000,
-                system: AI_SYSTEM,
-                messages: aiHistory
+                message: message,
+                history: aiHistory.slice(0, -1)
             })
         });
         const data = await res.json();
-        const reply = data.content[0].text;
+        const reply = data.reply;
         aiHistory.push({ role: "assistant", content: reply });
         return reply;
     } catch(e) {

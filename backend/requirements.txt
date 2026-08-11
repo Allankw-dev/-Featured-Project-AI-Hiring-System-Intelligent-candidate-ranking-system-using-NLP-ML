@@ -17,3 +17,4 @@ python-dotenv
 resend
 httpx
 python-docx
+httpx
