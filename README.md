@@ -316,8 +316,6 @@ Output
 
 
 
-You are out of free messages until 4:30 PM
-Upgrade
 
 
 
