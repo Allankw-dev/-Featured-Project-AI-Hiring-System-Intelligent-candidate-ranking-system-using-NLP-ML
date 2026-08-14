@@ -58,10 +58,10 @@ class ChatMessage(BaseModel):
 
 @app.post("/chat")
 async def chat(payload: ChatMessage):
-    ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+    GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
-    if not ANTHROPIC_API_KEY:
-        return {"reply": "Chat is temporarily unavailable — missing API key configuration."}
+    if not GEMINI_API_KEY:
+        return {"reply": "Chat is temporarily unavailable."}
 
     system = """You are Hira, an AI assistant for an AI-powered hiring platform. You help both candidates and admins.
 
@@ -76,36 +76,36 @@ PLATFORM DETAILS:
 Be helpful, concise, friendly and accurate. Answer ANY question asked.
 Keep responses under 200 words unless more detail is needed."""
 
-    messages = payload.history + [{"role": "user", "content": payload.message}]
+    # Build conversation for Gemini
+    contents = []
+    for msg in payload.history:
+        contents.append({
+            "role": "user" if msg["role"] == "user" else "model",
+            "parts": [{"text": msg["content"]}]
+        })
+    contents.append({"role": "user", "parts": [{"text": payload.message}]})
 
     try:
         async with httpx.AsyncClient() as client:
             response = await client.post(
-                "https://api.anthropic.com/v1/messages",
-                headers={
-                    "x-api-key": ANTHROPIC_API_KEY,
-                    "anthropic-version": "2023-06-01",
-                    "content-type": "application/json"
-                },
+                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}",
+                headers={"Content-Type": "application/json"},
                 json={
-                    "model": "claude-sonnet-4-6",
-                    "max_tokens": 1000,
-                    "system": system,
-                    "messages": messages
+                    "system_instruction": {"parts": [{"text": system}]},
+                    "contents": contents,
+                    "generationConfig": {"maxOutputTokens": 500}
                 },
                 timeout=30.0
             )
             data = response.json()
 
             if response.status_code != 200:
-                error_msg = data.get('error', {}).get('message', 'unknown error')
-                print(f"Claude API error: {error_msg}")
+                print(f"Gemini API error: {data}")
                 return {"reply": "Sorry, I'm having trouble right now. Please try again!"}
 
-            return {"reply": data["content"][0]["text"]}
+            reply = data["candidates"][0]["content"]["parts"][0]["text"]
+            return {"reply": reply}
 
-    except httpx.TimeoutException:
-        return {"reply": "Request timed out. Please try again!"}
     except Exception as e:
         print(f"Chat error: {str(e)}")
         return {"reply": "Sorry, something went wrong. Please try again!"}
