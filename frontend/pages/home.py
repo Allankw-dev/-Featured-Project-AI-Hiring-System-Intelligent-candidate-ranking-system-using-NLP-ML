@@ -3,481 +3,392 @@ import streamlit.components.v1 as components
 
 
 def render():
+    # ── HANDLE NAVIGATION FROM IFRAME ──
     nav_target = st.query_params.get("nav", "")
     if nav_target:
         st.query_params.clear()
         st.session_state.page = nav_target
         st.rerun()
 
-    components.html("""
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+    result = components.html("""
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;600;700&display=swap');
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html, body {
-    font-family: 'Inter', sans-serif;
-    background: #05060f;
-    color: #e2e8f0;
-    overflow-x: hidden;
-}
+        html, body {
+            height: auto;
+            background: #000510;
+            font-family: 'Exo 2', sans-serif;
+            overflow-x: hidden;
+        }
 
-canvas {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.6;
-}
+        canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
 
-.page { position: relative; z-index: 1; padding: 56px 40px 64px; max-width: 1080px; margin: 0 auto; }
+        .content {
+            position: relative;
+            z-index: 1;
+            padding: 40px 32px 32px;
+        }
 
-/* ── HERO ── */
-.hero { display: grid; grid-template-columns: 1fr 420px; gap: 48px; align-items: start; margin-bottom: 80px; }
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 32px;
+            align-items: start;
+        }
 
-.badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 5px 14px; border-radius: 999px;
-    background: rgba(99,102,241,0.1);
-    border: 1px solid rgba(99,102,241,0.25);
-    color: #a5b4fc; font-size: 12px; font-weight: 500;
-    letter-spacing: 0.5px; margin-bottom: 24px;
-}
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 7px 20px; border-radius: 999px;
+            background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.5);
+            color: #c4b5fd; font-size: 13px; font-weight: 600;
+            letter-spacing: 1px; margin-bottom: 20px;
+            box-shadow: 0 0 25px rgba(139,92,246,0.25);
+        }
 
-.badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #6366f1; animation: blink 2.5s ease-in-out infinite; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+        .hero-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 48px; line-height: 1.1; font-weight: 900;
+            color: #fff; margin-bottom: 20px; letter-spacing: 1px;
+        }
 
-.hero-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 52px; line-height: 1.08; font-weight: 700;
-    color: #f1f5f9; margin-bottom: 20px; letter-spacing: -1px;
-}
+        .hero-title .glow {
+            background: linear-gradient(90deg, #a78bfa, #60a5fa, #c084fc);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 25px rgba(139,92,246,0.8));
+        }
 
-.hero-title .accent {
-    background: linear-gradient(135deg, #818cf8, #38bdf8);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
+        .hero-text {
+            font-size: 15px; color: rgba(203,213,225,0.85);
+            line-height: 1.9; margin-bottom: 28px;
+        }
 
-.hero-desc {
-    font-size: 16px; line-height: 1.8;
-    color: #94a3b8; margin-bottom: 36px;
-    max-width: 480px;
-}
+        .stats-wrapper {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px; margin-bottom: 24px;
+        }
 
-.btn-group { display: flex; gap: 12px; flex-wrap: wrap; }
+        .stat-item {
+            background: rgba(139,92,246,0.1);
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 14px; padding: 14px 8px; text-align: center;
+        }
 
-.btn {
-    padding: 12px 24px; border-radius: 8px;
-    font-family: 'Inter', sans-serif; font-size: 14px;
-    font-weight: 500; cursor: pointer; text-decoration: none;
-    display: inline-block; text-align: center;
-    transition: all 0.2s ease; letter-spacing: 0.2px;
-    border: none;
-}
+        .stat-number {
+            font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 700;
+            background: linear-gradient(90deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(139,92,246,0.8));
+        }
 
-.btn-primary {
-    background: #6366f1; color: #fff;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 0 0 1px rgba(99,102,241,0.3);
-}
-.btn-primary:hover { background: #5355d4; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(99,102,241,0.35); }
+        .stat-label {
+            color: #94a3b8; font-size: 9px;
+            letter-spacing: 1px; text-transform: uppercase; margin-top: 4px;
+        }
 
-.btn-secondary {
-    background: rgba(255,255,255,0.05);
-    color: #cbd5e1;
-    border: 1px solid rgba(255,255,255,0.1);
-}
-.btn-secondary:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.18); color: #f1f5f9; }
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-/* ── PANEL ── */
-.panel {
-    background: rgba(15,18,35,0.8);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 16px; padding: 28px;
-    backdrop-filter: blur(12px);
-}
+        .btn {
+            padding: 14px 20px; border-radius: 10px; border: none;
+            font-family: 'Exo 2', sans-serif; font-size: 14px; font-weight: 700;
+            cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
+            white-space: nowrap; text-decoration: none; display: block;
+            text-align: center;
+        }
 
-.panel-label {
-    font-size: 11px; font-weight: 600; letter-spacing: 1.2px;
-    text-transform: uppercase; color: #475569; margin-bottom: 20px;
-}
+        .btn-primary {
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            color: white; box-shadow: 0 0 20px rgba(124,58,237,0.4);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(124,58,237,0.6); }
 
-.panel-item {
-    display: flex; gap: 14px; align-items: flex-start;
-    padding: 14px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-.panel-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .btn-secondary {
+            background: rgba(139,92,246,0.1);
+            color: #a78bfa; border: 1px solid rgba(139,92,246,0.4);
+        }
+        .btn-secondary:hover { background: rgba(139,92,246,0.2); transform: translateY(-2px); }
 
-.panel-icon {
-    width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; background: rgba(99,102,241,0.12);
-    border: 1px solid rgba(99,102,241,0.15);
-}
+        .side-panel {
+            background: rgba(4,6,22,0.85);
+            border: 1px solid rgba(139,92,246,0.25);
+            border-radius: 20px; padding: 24px;
+            position: relative; overflow: hidden;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 0 30px rgba(139,92,246,0.1);
+        }
 
-.panel-item-name { font-size: 14px; font-weight: 500; color: #e2e8f0; margin-bottom: 3px; }
-.panel-item-desc { font-size: 12px; color: #64748b; line-height: 1.5; }
+        .side-panel::before {
+            content:''; position:absolute; top:0; left:0; right:0; height:1.5px;
+            background:linear-gradient(90deg,transparent,#8b5cf6,#60a5fa,transparent);
+        }
 
-/* ── METRICS ── */
-.metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgba(255,255,255,0.06); border-radius: 12px; overflow: hidden; margin-bottom: 80px; }
+        .panel-title {
+            font-family: 'Orbitron', sans-serif; font-size: 10px;
+            color: #a78bfa; letter-spacing: 3px; text-transform: uppercase;
+            margin-bottom: 16px; padding-bottom: 12px;
+            border-bottom: 1px solid rgba(139,92,246,0.15);
+        }
 
-.metric {
-    background: rgba(10,12,28,0.9);
-    padding: 28px 24px; text-align: center;
-}
+        .panel-item {
+            display: flex; align-items: flex-start; gap: 10px;
+            margin-bottom: 12px; padding: 10px; border-radius: 10px;
+            background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.12);
+            transition: all 0.2s;
+        }
 
-.metric-value {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 32px; font-weight: 700; color: #f1f5f9;
-    letter-spacing: -0.5px; margin-bottom: 6px;
-}
+        .panel-item:hover { border-color: rgba(139,92,246,0.3); }
+        .panel-dot { width:7px; height:7px; border-radius:50%; background:#8b5cf6; box-shadow:0 0 8px rgba(139,92,246,1); margin-top:5px; flex-shrink:0; }
+        .panel-item-text { color:#94a3b8; font-size:12px; line-height:1.5; }
+        .panel-item-title { font-weight:700; color:#e2e8f0; margin-bottom:2px; display:block; }
 
-.metric-label { font-size: 12px; color: #475569; letter-spacing: 0.5px; text-transform: uppercase; }
+        .neon-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(139,92,246,0.6), rgba(59,130,246,0.6), transparent);
+            margin: 32px 0; border: none;
+        }
 
-/* ── DIVIDER ── */
-.section-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 0 0 64px; }
+        .section-heading {
+            font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 700;
+            text-align: center; background: linear-gradient(90deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 6px; letter-spacing: 1px;
+        }
 
-/* ── SECTION ── */
-.section-header { margin-bottom: 40px; }
-.section-tag { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #6366f1; margin-bottom: 10px; }
-.section-title { font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700; color: #f1f5f9; letter-spacing: -0.5px; margin-bottom: 12px; }
-.section-desc { font-size: 15px; color: #64748b; line-height: 1.7; max-width: 520px; }
+        .section-sub { text-align:center; color:#64748b; font-size:12px; margin-bottom:24px; letter-spacing:1px; }
 
-/* ── STEPS ── */
-.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden; margin-bottom: 80px; }
+        .steps-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 12px; margin-bottom: 16px;
+        }
 
-.step {
-    background: rgba(10,12,28,0.9); padding: 28px 22px;
-    position: relative;
-}
+        .step {
+            text-align: center; padding: 20px 12px;
+            background: rgba(4,6,22,0.85); border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 14px; transition: all 0.3s;
+        }
 
-.step-num {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 13px; font-weight: 700; color: #6366f1;
-    letter-spacing: 1px; margin-bottom: 14px;
-}
+        .step:hover { border-color:rgba(139,92,246,.4); transform:translateY(-4px); }
+        .step-num { font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; background:linear-gradient(135deg,#8b5cf6,#3b82f6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px; }
+        .step-title { font-weight:700; color:#e2e8f0; font-size:13px; margin-bottom:4px; }
+        .step-text { color:#64748b; font-size:11px; line-height:1.5; }
 
-.step-title { font-size: 15px; font-weight: 600; color: #e2e8f0; margin-bottom: 8px; }
-.step-desc { font-size: 13px; color: #475569; line-height: 1.6; }
+        .feature-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 12px; margin-bottom: 16px;
+        }
 
-/* ── FEATURES ── */
-.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden; margin-bottom: 80px; }
+        .feature-card {
+            padding: 22px 18px; background: rgba(4,6,22,0.85);
+            border: 1px solid rgba(139,92,246,0.2); border-radius: 16px;
+            position: relative; overflow: hidden; transition: all 0.3s;
+        }
 
-.feature { background: rgba(10,12,28,0.9); padding: 28px 24px; }
+        .feature-card::before { content:''; position:absolute; top:0; left:0; right:0; height:1.5px; background:linear-gradient(90deg,transparent,rgba(139,92,246,.5),transparent); }
+        .feature-card:hover { border-color:rgba(139,92,246,.45); transform:translateY(-5px); }
+        .feature-icon { font-size:28px; margin-bottom:10px; }
+        .feature-title { font-family:'Orbitron',sans-serif; font-size:12px; font-weight:700; color:#e2e8f0; margin-bottom:6px; }
+        .feature-text { color:#64748b; font-size:11px; line-height:1.6; }
 
-.feature-icon {
-    width: 40px; height: 40px; border-radius: 10px;
-    background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.15);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; margin-bottom: 16px;
-}
+        .cta-wrapper {
+            background: radial-gradient(ellipse at center, rgba(139,92,246,0.15) 0%, transparent 70%);
+            border: 1px solid rgba(139,92,246,0.3); border-radius: 24px;
+            padding: 40px; text-align: center; position: relative; overflow: hidden;
+            margin-bottom: 8px;
+        }
 
-.feature-title { font-size: 15px; font-weight: 600; color: #e2e8f0; margin-bottom: 8px; }
-.feature-desc { font-size: 13px; color: #475569; line-height: 1.7; }
+        .cta-wrapper::before { content:''; position:absolute; top:0; left:0; right:0; height:1.5px; background:linear-gradient(90deg,transparent,#8b5cf6,#60a5fa,transparent); }
+        .cta-title { font-family:'Orbitron',sans-serif; font-size:26px; font-weight:900; color:white; margin-bottom:8px; }
+        .cta-text { color:#94a3b8; font-size:13px; margin-bottom:24px; }
+        .cta-btn-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
 
-/* ── SCORE BREAKDOWN ── */
-.score-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 80px; }
+        @media (max-width: 700px) {
+            .hero-grid { grid-template-columns: 1fr; }
+            .hero-title { font-size: 30px; }
+            .stats-wrapper { grid-template-columns: repeat(2, 1fr); }
+            .steps-grid { grid-template-columns: repeat(2, 1fr); }
+            .feature-grid { grid-template-columns: 1fr; }
+            .cta-btn-row { grid-template-columns: 1fr; }
+            .btn-row { grid-template-columns: 1fr; }
+        }
+    </style>
+    </head>
+    <body>
 
-.score-card {
-    background: rgba(15,18,35,0.8);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 12px; padding: 20px 22px;
-    display: flex; align-items: center; gap: 18px;
-}
+    <canvas id="c"></canvas>
 
-.score-bar-wrap { flex: 1; }
-.score-label { font-size: 13px; font-weight: 500; color: #cbd5e1; margin-bottom: 8px; display: flex; justify-content: space-between; }
-.score-pct { font-size: 13px; font-weight: 700; color: #818cf8; }
-.score-bar-bg { height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
-.score-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, #6366f1, #38bdf8); }
-.score-desc { font-size: 11px; color: #475569; margin-top: 5px; }
-
-/* ── CTA ── */
-.cta {
-    background: rgba(15,18,35,0.8);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 16px; padding: 52px 48px;
-    display: flex; justify-content: space-between; align-items: center; gap: 40px;
-}
-
-.cta-left {}
-.cta-title { font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; color: #f1f5f9; letter-spacing: -0.5px; margin-bottom: 10px; }
-.cta-desc { font-size: 15px; color: #64748b; line-height: 1.6; }
-.cta-actions { display: flex; gap: 10px; flex-shrink: 0; }
-
-@media (max-width: 768px) {
-    .hero { grid-template-columns: 1fr; }
-    .hero-title { font-size: 34px; }
-    .metrics { grid-template-columns: repeat(2, 1fr); }
-    .steps { grid-template-columns: repeat(2, 1fr); }
-    .features { grid-template-columns: 1fr; }
-    .score-grid { grid-template-columns: 1fr; }
-    .cta { flex-direction: column; padding: 36px 28px; }
-    .page { padding: 40px 20px 48px; }
-}
-</style>
-</head>
-<body>
-
-<canvas id="c"></canvas>
-
-<div class="page">
-
-    <!-- HERO -->
-    <div class="hero">
-        <div>
-            <div class="badge"><div class="badge-dot"></div> AI-Powered Recruitment</div>
-            <h1 class="hero-title">Hire the right people,<br><span class="accent">faster than ever.</span></h1>
-            <p class="hero-desc">Automate resume screening, rank candidates with AI, and make confident hiring decisions — all in one platform built for modern teams.</p>
-            <div class="btn-group">
-                <a class="btn btn-primary" href="?nav=Sign Up" target="_top">Get started free</a>
-                <a class="btn btn-secondary" href="?nav=Login" target="_top">Sign in</a>
-            </div>
-        </div>
-
-        <div class="panel">
-            <div class="panel-label">Platform capabilities</div>
-
-            <div class="panel-item">
-                <div class="panel-icon">📄</div>
-                <div>
-                    <div class="panel-item-name">Resume parsing</div>
-                    <div class="panel-item-desc">Extracts skills, experience, and contact info from uploaded PDFs automatically.</div>
+    <div class="content">
+        <div class="hero-grid">
+            <div>
+                <div class="hero-badge"> Next-Gen AI Recruitment Platform</div>
+                <div class="hero-title">
+                    Hire Smarter.<br>
+                    <span class="glow">Think Faster.</span><br>
+                    Win Better.
+                </div>
+                <div class="hero-text">
+                    Transform your recruitment with AI-powered resume analysis,
+                    intelligent candidate scoring, and data-driven hiring decisions —
+                    all in one unified platform built for the future.
+                </div>
+                <div class="stats-wrapper">
+                    <div class="stat-item"><div class="stat-number">98%</div><div class="stat-label">Match Accuracy</div></div>
+                    <div class="stat-item"><div class="stat-number">10x</div><div class="stat-label">Faster Hiring</div></div>
+                    <div class="stat-item"><div class="stat-number">500+</div><div class="stat-label">Jobs Matched</div></div>
+                    <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">AI Active</div></div>
+                </div>
+                <div class="btn-row">
+                    <a class="btn btn-primary" href="?nav=Sign Up" target="_top"> Get Started — Free</a>
+                    <a class="btn btn-secondary" href="?nav=Login" target="_top"> Login</a>
                 </div>
             </div>
 
-            <div class="panel-item">
-                <div class="panel-icon">🧠</div>
-                <div>
-                    <div class="panel-item-name">Semantic scoring</div>
-                    <div class="panel-item-desc">Ranks candidates using NLP — not just keyword matching.</div>
-                </div>
-            </div>
-
-            <div class="panel-item">
-                <div class="panel-icon">🛡</div>
-                <div>
-                    <div class="panel-item-name">Fraud detection</div>
-                    <div class="panel-item-desc">Flags keyword stuffing, inconsistent dates, and suspicious patterns.</div>
-                </div>
-            </div>
-
-            <div class="panel-item">
-                <div class="panel-icon">📊</div>
-                <div>
-                    <div class="panel-item-name">Live rankings</div>
-                    <div class="panel-item-desc">Candidate leaderboards update in real time as applications arrive.</div>
-                </div>
-            </div>
-
-            <div class="panel-item">
-                <div class="panel-icon">✉</div>
-                <div>
-                    <div class="panel-item-name">Direct communication</div>
-                    <div class="panel-item-desc">Send shortlist or rejection emails directly from the admin panel.</div>
-                </div>
+            <div class="side-panel">
+                <div class="panel-title">// Platform Capabilities</div>
+                <div class="panel-item"><div class="panel-dot"></div><div class="panel-item-text"><span class="panel-item-title">AI Resume Parsing</span>Automatically extract skills, experience, and qualifications from uploaded CVs</div></div>
+                <div class="panel-item"><div class="panel-dot"></div><div class="panel-item-text"><span class="panel-item-title">Intelligent Scoring</span>Rank candidates using semantic analysis, skill matching, and experience scoring</div></div>
+                <div class="panel-item"><div class="panel-dot"></div><div class="panel-item-text"><span class="panel-item-title">Fraud Detection</span>Verify resume authenticity and flag suspicious or exaggerated claims</div></div>
+                <div class="panel-item"><div class="panel-dot"></div><div class="panel-item-text"><span class="panel-item-title">Admin Control Center</span>Full visibility into applications, shortlisting, rejection, and email communication</div></div>
+                <div class="panel-item"><div class="panel-dot"></div><div class="panel-item-text"><span class="panel-item-title">Real-Time Rankings</span>Live candidate leaderboards updated instantly as new applications arrive</div></div>
             </div>
         </div>
-    </div>
 
-    <!-- METRICS -->
-    <div class="metrics">
-        <div class="metric"><div class="metric-value">98%</div><div class="metric-label">Match accuracy</div></div>
-        <div class="metric"><div class="metric-value">10x</div><div class="metric-label">Faster screening</div></div>
-        <div class="metric"><div class="metric-value">500+</div><div class="metric-label">Jobs processed</div></div>
-        <div class="metric"><div class="metric-value">24/7</div><div class="metric-label">AI availability</div></div>
-    </div>
+        <div class="neon-divider"></div>
 
-    <div class="section-divider"></div>
+        <div class="section-heading">How It Works</div>
+        <div class="section-sub">// Four steps to smarter hiring</div>
+        <div class="steps-grid">
+            <div class="step"><div class="step-num">01</div><div class="step-title">Post a Job</div><div class="step-text">Admin creates listings with required skills & experience level</div></div>
+            <div class="step"><div class="step-num">02</div><div class="step-title">Upload Resume</div><div class="step-text">Candidates apply and upload CVs directly to the platform</div></div>
+            <div class="step"><div class="step-num">03</div><div class="step-title">AI Analyzes</div><div class="step-text">AI scores, ranks and verifies each application instantly</div></div>
+            <div class="step"><div class="step-num">04</div><div class="step-title">Hire the Best</div><div class="step-text">Admins review top candidates and make confident decisions</div></div>
+        </div>
 
-    <!-- HOW IT WORKS -->
-    <div class="section-header">
-        <div class="section-tag">Process</div>
-        <div class="section-title">How it works</div>
-        <div class="section-desc">From job post to hire in four steps — no manual screening required.</div>
-    </div>
+        <div class="neon-divider"></div>
 
-    <div class="steps">
-        <div class="step">
-            <div class="step-num">01</div>
-            <div class="step-title">Post a job</div>
-            <div class="step-desc">Create a listing with required skills, experience level, and job description.</div>
+        <div class="section-heading">Platform Features</div>
+        <div class="section-sub">// Everything for modern intelligent recruitment</div>
+        <div class="feature-grid">
+            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Resume Intelligence</div><div class="feature-text">Upload PDFs and let AI parse, extract, and analyze candidate data with high precision.</div></div>
+            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Semantic AI Scoring</div><div class="feature-text">Goes beyond keywords — understands context, experience depth, and skill relevance.</div></div>
+            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Verification Engine</div><div class="feature-text">Detects inconsistencies, flags risk factors, and verifies resume authenticity.</div></div>
+            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Real-Time Rankings</div><div class="feature-text">Candidate leaderboards update instantly as new applications arrive.</div></div>
+            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Smart Communication</div><div class="feature-text">Send personalized emails directly from the platform with one click.</div></div>
+            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Hiring Analytics</div><div class="feature-text">Full visibility into your pipeline — scores, statuses, and hiring trends.</div></div>
         </div>
-        <div class="step">
-            <div class="step-num">02</div>
-            <div class="step-title">Candidates apply</div>
-            <div class="step-desc">Applicants sign up, upload their CV, and submit — no third-party forms.</div>
-        </div>
-        <div class="step">
-            <div class="step-num">03</div>
-            <div class="step-title">AI scores instantly</div>
-            <div class="step-desc">Each resume is analyzed, verified, and ranked automatically on submission.</div>
-        </div>
-        <div class="step">
-            <div class="step-num">04</div>
-            <div class="step-title">Hire with confidence</div>
-            <div class="step-desc">Review ranked candidates, shortlist, and communicate — all from one panel.</div>
-        </div>
-    </div>
 
-    <div class="section-divider"></div>
+        <div class="neon-divider"></div>
 
-    <!-- SCORING BREAKDOWN -->
-    <div class="section-header">
-        <div class="section-tag">AI Engine</div>
-        <div class="section-title">How candidates are scored</div>
-        <div class="section-desc">Every application receives a composite score based on four weighted signals.</div>
-    </div>
-
-    <div class="score-grid">
-        <div class="score-card">
-            <div class="score-bar-wrap">
-                <div class="score-label">Semantic match <span class="score-pct">45%</span></div>
-                <div class="score-bar-bg"><div class="score-bar-fill" style="width:45%"></div></div>
-                <div class="score-desc">TF-IDF cosine similarity between resume and job description</div>
-            </div>
-        </div>
-        <div class="score-card">
-            <div class="score-bar-wrap">
-                <div class="score-label">Skills coverage <span class="score-pct">25%</span></div>
-                <div class="score-bar-bg"><div class="score-bar-fill" style="width:25%"></div></div>
-                <div class="score-desc">Percentage of required skills found in the resume</div>
-            </div>
-        </div>
-        <div class="score-card">
-            <div class="score-bar-wrap">
-                <div class="score-label">Experience fit <span class="score-pct">20%</span></div>
-                <div class="score-bar-bg"><div class="score-bar-fill" style="width:20%"></div></div>
-                <div class="score-desc">Candidate years vs. role requirement ratio</div>
-            </div>
-        </div>
-        <div class="score-card">
-            <div class="score-bar-wrap">
-                <div class="score-label">Verification <span class="score-pct">10%</span></div>
-                <div class="score-bar-bg"><div class="score-bar-fill" style="width:10%"></div></div>
-                <div class="score-desc">Resume authenticity — flags fraud signals and inconsistencies</div>
+        <div class="cta-wrapper">
+            <div class="cta-title">Ready to Transform Your Hiring?</div>
+            <div class="cta-text">Join the future of recruitment. Set up in minutes, hire better forever.</div>
+            <div class="cta-btn-row">
+                <a class="btn btn-primary" href="?nav=Sign Up" target="_top"> Create Free Account</a>
+                <a class="btn btn-secondary" href="?nav=Login" target="_top"> Sign In</a>
+                <a class="btn btn-secondary" href="?nav=Jobs" target="_top"> Browse Jobs</a>
             </div>
         </div>
     </div>
 
-    <div class="section-divider"></div>
+    <script>
+        function sendHeight() {
+            const h = document.body.scrollHeight;
+            window.parent.postMessage({type: 'streamlit:setFrameHeight', height: h}, '*');
+        }
 
-    <!-- FEATURES -->
-    <div class="section-header">
-        <div class="section-tag">Features</div>
-        <div class="section-title">Everything you need</div>
-        <div class="section-desc">Built for recruiters who want signal, not noise.</div>
-    </div>
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(sendHeight);
+        }
 
-    <div class="features">
-        <div class="feature">
-            <div class="feature-icon">📄</div>
-            <div class="feature-title">Resume intelligence</div>
-            <div class="feature-desc">Structured extraction from PDF uploads — name, skills, experience, education, contact info.</div>
-        </div>
-        <div class="feature">
-            <div class="feature-icon">🧠</div>
-            <div class="feature-title">NLP matching</div>
-            <div class="feature-desc">Understands context and meaning — not just whether a keyword appears.</div>
-        </div>
-        <div class="feature">
-            <div class="feature-icon">🛡</div>
-            <div class="feature-title">Fraud detection</div>
-            <div class="feature-desc">Detects keyword stuffing, inflated claims, future dates, and missing contact info.</div>
-        </div>
-        <div class="feature">
-            <div class="feature-icon">⚡</div>
-            <div class="feature-title">Real-time rankings</div>
-            <div class="feature-desc">Leaderboard updates as each application lands — always see the best candidates first.</div>
-        </div>
-        <div class="feature">
-            <div class="feature-icon">✉</div>
-            <div class="feature-title">Email communication</div>
-            <div class="feature-desc">Send tailored shortlist or rejection emails without leaving the platform.</div>
-        </div>
-        <div class="feature">
-            <div class="feature-icon">🔐</div>
-            <div class="feature-title">Secure by default</div>
-            <div class="feature-desc">JWT auth, bcrypt hashing, rate limiting, CORS protection, and input sanitization.</div>
-        </div>
-    </div>
+        const resizeObserver = new ResizeObserver(() => sendHeight());
+        resizeObserver.observe(document.body);
 
-    <!-- CTA -->
-    <div class="cta">
-        <div class="cta-left">
-            <div class="cta-title">Ready to hire smarter?</div>
-            <div class="cta-desc">Set up takes minutes. No credit card required.</div>
-        </div>
-        <div class="cta-actions">
-            <a class="btn btn-primary" href="?nav=Sign Up" target="_top">Create account</a>
-            <a class="btn btn-secondary" href="?nav=Jobs" target="_top">Browse jobs</a>
-        </div>
-    </div>
+        window.addEventListener('load', sendHeight);
+        window.addEventListener('resize', sendHeight);
+        setTimeout(sendHeight, 300);
+        setTimeout(sendHeight, 800);
+        setTimeout(sendHeight, 1500);
 
-</div>
+        const canvas = document.getElementById('c');
+        const ctx = canvas.getContext('2d');
 
-<script>
-function sendHeight() {
-    const h = document.body.scrollHeight;
-    window.parent.postMessage({type:'streamlit:setFrameHeight', height:h}, '*');
-}
-const ro = new ResizeObserver(sendHeight);
-ro.observe(document.body);
-window.addEventListener('load', sendHeight);
-setTimeout(sendHeight, 500);
-setTimeout(sendHeight, 1200);
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
 
-const canvas = document.getElementById('c');
-const ctx = canvas.getContext('2d');
-let W = canvas.width = window.innerWidth;
-let H = canvas.height = window.innerHeight;
+        const COUNT = 80, MAX_DIST = 150;
+        const particles = [];
 
-window.addEventListener('resize', () => {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-});
-
-const COUNT = 60, MAX = 140;
-const pts = Array.from({length: COUNT}, () => ({
-    x: Math.random()*W, y: Math.random()*H,
-    vx: (Math.random()-.5)*.4, vy: (Math.random()-.5)*.4,
-    r: Math.random()*1.5+.5
-}));
-
-function draw() {
-    ctx.clearRect(0,0,W,H);
-    pts.forEach(p => {
-        p.x += p.vx; p.y += p.vy;
-        if(p.x<0||p.x>W) p.vx*=-1;
-        if(p.y<0||p.y>H) p.vy*=-1;
-        ctx.beginPath();
-        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        ctx.fillStyle='rgba(99,102,241,0.5)';
-        ctx.fill();
-    });
-    for(let i=0;i<pts.length;i++) {
-        for(let j=i+1;j<pts.length;j++) {
-            const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y;
-            const d=Math.sqrt(dx*dx+dy*dy);
-            if(d<MAX) {
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.6;
+                this.vy = (Math.random() - 0.5) * 0.6;
+                this.r = Math.random() * 2 + 1;
+                this.color = Math.random() > 0.5 ? '139,92,246' : '59,130,246';
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width)  this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+            draw() {
                 ctx.beginPath();
-                ctx.moveTo(pts[i].x,pts[i].y);
-                ctx.lineTo(pts[j].x,pts[j].y);
-                ctx.strokeStyle=`rgba(99,102,241,${(1-d/MAX)*0.12})`;
-                ctx.lineWidth=.8;
-                ctx.stroke();
+                ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${this.color},0.35)`;
+                ctx.shadowBlur = 4;
+                ctx.shadowColor = `rgba(${this.color},0.2)`;
+                ctx.fill();
+                ctx.shadowBlur = 0;
             }
         }
-    }
-    requestAnimationFrame(draw);
-}
-draw();
-</script>
-</body>
-</html>
-    """, height=2400, scrolling=False)
+
+        for (let i = 0; i < COUNT; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0,5,16,0.25)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < MAX_DIST) {
+                        const alpha = (1 - dist / MAX_DIST) * 0.15;
+                        const grad = ctx.createLinearGradient(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
+                        grad.addColorStop(0, `rgba(139,92,246,${alpha})`);
+                        grad.addColorStop(1, `rgba(59,130,246,${alpha})`);
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = grad;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+    </body>
+    </html>
+    """, height=1800, scrolling=False)
