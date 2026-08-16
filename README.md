@@ -1,4 +1,4 @@
-cat > /home/claude/README.md << 'EOF'
+
 # 🤖 AI-Powered Hiring System
 
 > An intelligent recruitment platform built with FastAPI, Streamlit, and PostgreSQL — powered by NLP and machine learning to automate resume screening, candidate scoring, and hiring decisions.
@@ -310,9 +310,7 @@ This project is licensed under the MIT License.
 <div align="center">
   <strong>Built with ❤️ in Nairobi, Kenya 🇰🇪</strong>
 </div>
-EOF
-echo "Done"
-Output
+
 
 
 
