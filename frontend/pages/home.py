@@ -249,8 +249,8 @@ def render():
                     <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">AI Active</div></div>
                 </div>
                 <div class="btn-row">
-                    <a class="btn btn-primary" href="?nav=Sign Up" target="_top"> Get Started — Free</a>
-                    <a class="btn btn-secondary" href="?nav=Login" target="_top"> Login</a>
+                    <button class="btn btn-primary" onclick="navigate('Sign Up')">Get Started — Free</button>
+                    <button class="btn btn-secondary" onclick="navigate('Login')">Login</button>
                 </div>
             </div>
 
@@ -294,14 +294,20 @@ def render():
             <div class="cta-title">Ready to Transform Your Hiring?</div>
             <div class="cta-text">Join the future of recruitment. Set up in minutes, hire better forever.</div>
             <div class="cta-btn-row">
-                <a class="btn btn-primary" href="?nav=Sign Up" target="_top"> Create Free Account</a>
-                <a class="btn btn-secondary" href="?nav=Login" target="_top"> Sign In</a>
-                <a class="btn btn-secondary" href="?nav=Jobs" target="_top"> Browse Jobs</a>
+                <button class="btn btn-primary" onclick="navigate('Sign Up')">Create Free Account</button>
+                <button class="btn btn-secondary" onclick="navigate('Login')">Sign In</button>
+                <button class="btn btn-secondary" onclick="navigate('Jobs')">Browse Jobs</button>
             </div>
         </div>
     </div>
 
     <script>
+        function navigate(page) {
+            const url = new URL(window.parent.location.href);
+            url.searchParams.set('nav', page);
+            window.parent.location.href = url.toString();
+        }
+
         function sendHeight() {
             const h = document.body.scrollHeight;
             window.parent.postMessage({type: 'streamlit:setFrameHeight', height: h}, '*');
