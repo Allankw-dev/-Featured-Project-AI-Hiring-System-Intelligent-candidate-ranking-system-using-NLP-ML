@@ -3,13 +3,43 @@ import streamlit.components.v1 as components
 
 
 def render():
-    # ── HANDLE NAVIGATION FROM IFRAME ──
+    # ── HANDLE NAVIGATION ──
     nav_target = st.query_params.get("nav", "")
     if nav_target:
         st.query_params.clear()
         st.session_state.page = nav_target
         st.rerun()
 
+    # ── HERO BUTTONS (real Streamlit buttons) ──
+    col1, col2, col3 = st.columns([2, 1, 1])
+    with col2:
+        if st.button("Get Started — Free", use_container_width=True, key="home_signup"):
+            st.session_state.page = "Sign Up"
+            st.rerun()
+    with col3:
+        if st.button("Sign In", use_container_width=True, key="home_login"):
+            st.session_state.page = "Login"
+            st.rerun()
+
+    # ── REST OF PAGE (iframe) ──
+    components.html("""
+    ... your existing HTML without the buttons ...
+    """, height=2400, scrolling=False)
+
+    # ── CTA BUTTONS ──
+    c1, c2, c3 = st.columns([1, 1, 1])
+    with c1:
+        if st.button("Create Account", use_container_width=True, key="cta_signup"):
+            st.session_state.page = "Sign Up"
+            st.rerun()
+    with c2:
+        if st.button("Sign In", use_container_width=True, key="cta_login"):
+            st.session_state.page = "Login"
+            st.rerun()
+    with c3:
+        if st.button("Browse Jobs", use_container_width=True, key="cta_jobs"):
+            st.session_state.page = "Jobs"
+            st.rerun()
     result = components.html("""
     <!DOCTYPE html>
     <html>
