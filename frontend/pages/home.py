@@ -9,17 +9,6 @@ def render():
         st.session_state.page = nav_target
         st.rerun()
 
-    # ── HERO NAVIGATION BUTTONS ──
-    _, c1, c2, _ = st.columns([3, 1, 1, 3])
-    with c1:
-        if st.button("🚀 Get Started — Free", use_container_width=True, key="home_signup"):
-            st.session_state.page = "Sign Up"
-            st.rerun()
-    with c2:
-        if st.button("🔐 Login", use_container_width=True, key="home_login"):
-            st.session_state.page = "Login"
-            st.rerun()
-
     components.html("""
     <!DOCTYPE html>
     <html>
@@ -258,10 +247,16 @@ def render():
                     <div class="stat-item"><div class="stat-number">500+</div><div class="stat-label">Jobs Matched</div></div>
                     <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">AI Active</div></div>
                 </div>
-                <div class="btn-row">
-                    <button class="btn btn-primary" onclick="navigate('Sign Up')">Get Started — Free</button>
-                    <button class="btn btn-secondary" onclick="navigate('Login')">Login</button>
-                </div>
+                 # ── HERO NAVIGATION BUTTONS ──
+    _, c1, c2, _ = st.columns([3, 1, 1, 3])
+    with c1:
+        if st.button("🚀 Get Started — Free", use_container_width=True, key="home_signup"):
+            st.session_state.page = "Sign Up"
+            st.rerun()
+    with c2:
+        if st.button("🔐 Login", use_container_width=True, key="home_login"):
+            st.session_state.page = "Login"
+            st.rerun()
             </div>
 
             <div class="side-panel">
@@ -303,11 +298,21 @@ def render():
         <div class="cta-wrapper">
             <div class="cta-title">Ready to Transform Your Hiring?</div>
             <div class="cta-text">Join the future of recruitment. Set up in minutes, hire better forever.</div>
-            <div class="cta-btn-row">
-                <button class="btn btn-primary" onclick="navigate('Sign Up')">Create Free Account</button>
-                <button class="btn btn-secondary" onclick="navigate('Login')">Sign In</button>
-                <button class="btn btn-secondary" onclick="navigate('Jobs')">Browse Jobs</button>
-            </div>
+          # ── CTA BUTTONS ──
+    st.markdown("<br>", unsafe_allow_html=True)
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        if st.button("🚀 Create Account", use_container_width=True, key="cta_signup"):
+            st.session_state.page = "Sign Up"
+            st.rerun()
+    with c2:
+        if st.button("🔐 Sign In", use_container_width=True, key="cta_login"):
+            st.session_state.page = "Login"
+            st.rerun()
+    with c3:
+        if st.button("💼 Browse Jobs", use_container_width=True, key="cta_jobs"):
+            st.session_state.page = "Jobs"
+            st.rerun() 
         </div>
     </div>
 
