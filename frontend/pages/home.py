@@ -414,17 +414,4 @@ def render():
     </html>
     """, height=1800, scrolling=False)
       # ── CTA BUTTONS ──
-    st.markdown("<br>", unsafe_allow_html=True)
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        if st.button("🚀 Create Account", use_container_width=True, key="cta_signup"):
-            st.session_state.page = "Sign Up"
-            st.rerun()
-    with c2:
-        if st.button("🔐 Sign In", use_container_width=True, key="cta_login"):
-            st.session_state.page = "Login"
-            st.rerun()
-    with c3:
-        if st.button("💼 Browse Jobs", use_container_width=True, key="cta_jobs"):
-            st.session_state.page = "Jobs"
-            st.rerun()
+   
