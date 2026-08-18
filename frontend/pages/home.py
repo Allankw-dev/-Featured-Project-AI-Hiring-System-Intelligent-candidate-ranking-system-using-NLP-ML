@@ -3,43 +3,13 @@ import streamlit.components.v1 as components
 
 
 def render():
-    # ── HANDLE NAVIGATION ──
+    # ── HANDLE NAVIGATION FROM IFRAME ──
     nav_target = st.query_params.get("nav", "")
     if nav_target:
         st.query_params.clear()
         st.session_state.page = nav_target
         st.rerun()
 
-    # ── HERO BUTTONS (real Streamlit buttons) ──
-    col1, col2, col3 = st.columns([2, 1, 1])
-    with col2:
-        if st.button("Get Started — Free", use_container_width=True, key="home_signup"):
-            st.session_state.page = "Sign Up"
-            st.rerun()
-    with col3:
-        if st.button("Sign In", use_container_width=True, key="home_login"):
-            st.session_state.page = "Login"
-            st.rerun()
-
-    # ── REST OF PAGE (iframe) ──
-    components.html("""
-    ... your existing HTML without the buttons ...
-    """, height=2400, scrolling=False)
-
-    # ── CTA BUTTONS ──
-    c1, c2, c3 = st.columns([1, 1, 1])
-    with c1:
-        if st.button("Create Account", use_container_width=True, key="cta_signup"):
-            st.session_state.page = "Sign Up"
-            st.rerun()
-    with c2:
-        if st.button("Sign In", use_container_width=True, key="cta_login"):
-            st.session_state.page = "Login"
-            st.rerun()
-    with c3:
-        if st.button("Browse Jobs", use_container_width=True, key="cta_jobs"):
-            st.session_state.page = "Jobs"
-            st.rerun()
     result = components.html("""
     <!DOCTYPE html>
     <html>
@@ -261,7 +231,7 @@ def render():
     <div class="content">
         <div class="hero-grid">
             <div>
-                <div class="hero-badge"> Next-Gen AI Recruitment Platform</div>
+                <div class="hero-badge">⚡ Next-Gen AI Recruitment Platform</div>
                 <div class="hero-title">
                     Hire Smarter.<br>
                     <span class="glow">Think Faster.</span><br>
@@ -279,8 +249,8 @@ def render():
                     <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">AI Active</div></div>
                 </div>
                 <div class="btn-row">
-                    <button class="btn btn-primary" onclick="navigate('Sign Up')">Get Started — Free</button>
-                    <button class="btn btn-secondary" onclick="navigate('Login')">Login</button>
+                    <a class="btn btn-primary" href="?nav=Sign Up" target="_top">🚀 Get Started — Free</a>
+                    <a class="btn btn-secondary" href="?nav=Login" target="_top">🔐 Login</a>
                 </div>
             </div>
 
@@ -310,12 +280,12 @@ def render():
         <div class="section-heading">Platform Features</div>
         <div class="section-sub">// Everything for modern intelligent recruitment</div>
         <div class="feature-grid">
-            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Resume Intelligence</div><div class="feature-text">Upload PDFs and let AI parse, extract, and analyze candidate data with high precision.</div></div>
-            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Semantic AI Scoring</div><div class="feature-text">Goes beyond keywords — understands context, experience depth, and skill relevance.</div></div>
-            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Verification Engine</div><div class="feature-text">Detects inconsistencies, flags risk factors, and verifies resume authenticity.</div></div>
-            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Real-Time Rankings</div><div class="feature-text">Candidate leaderboards update instantly as new applications arrive.</div></div>
-            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Smart Communication</div><div class="feature-text">Send personalized emails directly from the platform with one click.</div></div>
-            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Hiring Analytics</div><div class="feature-text">Full visibility into your pipeline — scores, statuses, and hiring trends.</div></div>
+            <div class="feature-card"><div class="feature-icon">📄</div><div class="feature-title">Resume Intelligence</div><div class="feature-text">Upload PDFs and let AI parse, extract, and analyze candidate data with high precision.</div></div>
+            <div class="feature-card"><div class="feature-icon">🧠</div><div class="feature-title">Semantic AI Scoring</div><div class="feature-text">Goes beyond keywords — understands context, experience depth, and skill relevance.</div></div>
+            <div class="feature-card"><div class="feature-icon">🛡️</div><div class="feature-title">Verification Engine</div><div class="feature-text">Detects inconsistencies, flags risk factors, and verifies resume authenticity.</div></div>
+            <div class="feature-card"><div class="feature-icon">⚡</div><div class="feature-title">Real-Time Rankings</div><div class="feature-text">Candidate leaderboards update instantly as new applications arrive.</div></div>
+            <div class="feature-card"><div class="feature-icon">📧</div><div class="feature-title">Smart Communication</div><div class="feature-text">Send personalized emails directly from the platform with one click.</div></div>
+            <div class="feature-card"><div class="feature-icon">📊</div><div class="feature-title">Hiring Analytics</div><div class="feature-text">Full visibility into your pipeline — scores, statuses, and hiring trends.</div></div>
         </div>
 
         <div class="neon-divider"></div>
@@ -324,20 +294,14 @@ def render():
             <div class="cta-title">Ready to Transform Your Hiring?</div>
             <div class="cta-text">Join the future of recruitment. Set up in minutes, hire better forever.</div>
             <div class="cta-btn-row">
-                <button class="btn btn-primary" onclick="navigate('Sign Up')">Create Free Account</button>
-                <button class="btn btn-secondary" onclick="navigate('Login')">Sign In</button>
-                <button class="btn btn-secondary" onclick="navigate('Jobs')">Browse Jobs</button>
+                <a class="btn btn-primary" href="?nav=Sign Up" target="_top">🚀 Create Free Account</a>
+                <a class="btn btn-secondary" href="?nav=Login" target="_top">🔐 Sign In</a>
+                <a class="btn btn-secondary" href="?nav=Jobs" target="_top">💼 Browse Jobs</a>
             </div>
         </div>
     </div>
 
     <script>
-        function navigate(page) {
-            const url = new URL(window.parent.location.href);
-            url.searchParams.set('nav', page);
-            window.parent.location.href = url.toString();
-        }
-
         function sendHeight() {
             const h = document.body.scrollHeight;
             window.parent.postMessage({type: 'streamlit:setFrameHeight', height: h}, '*');
