@@ -280,12 +280,12 @@ def render():
         <div class="section-heading">Platform Features</div>
         <div class="section-sub">// Everything for modern intelligent recruitment</div>
         <div class="feature-grid">
-            <div class="feature-card"><div class="feature-icon">📄</div><div class="feature-title">Resume Intelligence</div><div class="feature-text">Upload PDFs and let AI parse, extract, and analyze candidate data with high precision.</div></div>
-            <div class="feature-card"><div class="feature-icon">🧠</div><div class="feature-title">Semantic AI Scoring</div><div class="feature-text">Goes beyond keywords — understands context, experience depth, and skill relevance.</div></div>
-            <div class="feature-card"><div class="feature-icon">🛡️</div><div class="feature-title">Verification Engine</div><div class="feature-text">Detects inconsistencies, flags risk factors, and verifies resume authenticity.</div></div>
-            <div class="feature-card"><div class="feature-icon">⚡</div><div class="feature-title">Real-Time Rankings</div><div class="feature-text">Candidate leaderboards update instantly as new applications arrive.</div></div>
-            <div class="feature-card"><div class="feature-icon">📧</div><div class="feature-title">Smart Communication</div><div class="feature-text">Send personalized emails directly from the platform with one click.</div></div>
-            <div class="feature-card"><div class="feature-icon">📊</div><div class="feature-title">Hiring Analytics</div><div class="feature-text">Full visibility into your pipeline — scores, statuses, and hiring trends.</div></div>
+            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Resume Intelligence</div><div class="feature-text">Upload PDFs and let AI parse, extract, and analyze candidate data with high precision.</div></div>
+            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Semantic AI Scoring</div><div class="feature-text">Goes beyond keywords — understands context, experience depth, and skill relevance.</div></div>
+            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Verification Engine</div><div class="feature-text">Detects inconsistencies, flags risk factors, and verifies resume authenticity.</div></div>
+            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Real-Time Rankings</div><div class="feature-text">Candidate leaderboards update instantly as new applications arrive.</div></div>
+            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Smart Communication</div><div class="feature-text">Send personalized emails directly from the platform with one click.</div></div>
+            <div class="feature-card"><div class="feature-icon"></div><div class="feature-title">Hiring Analytics</div><div class="feature-text">Full visibility into your pipeline — scores, statuses, and hiring trends.</div></div>
         </div>
 
         <div class="neon-divider"></div>
@@ -294,9 +294,9 @@ def render():
             <div class="cta-title">Ready to Transform Your Hiring?</div>
             <div class="cta-text">Join the future of recruitment. Set up in minutes, hire better forever.</div>
             <div class="cta-btn-row">
-                <a class="btn btn-primary" href="?nav=Sign Up" target="_top">🚀 Create Free Account</a>
-                <a class="btn btn-secondary" href="?nav=Login" target="_top">🔐 Sign In</a>
-                <a class="btn btn-secondary" href="?nav=Jobs" target="_top">💼 Browse Jobs</a>
+                <a class="btn btn-primary" href="?nav=Sign Up" target="_top">Create Free Account</a>
+                <a class="btn btn-secondary" href="?nav=Login" target="_top"> Sign In</a>
+                <a class="btn btn-secondary" href="?nav=Jobs" target="_top"> Browse Jobs</a>
             </div>
         </div>
     </div>
