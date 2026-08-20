@@ -251,7 +251,7 @@ def render():
     <div class="content">
         <div class="hero-grid">
             <div>
-                <div class="hero-badge">⚡ Next-Gen AI Recruitment Platform</div>
+                <div class="hero-badge"> Next-Gen AI Recruitment Platform</div>
                 <div class="hero-title">
                     Hire Smarter.<br>
                     <span class="glow">Think Faster.</span><br>

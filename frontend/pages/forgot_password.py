@@ -126,7 +126,7 @@ def render():
         <div class="forgot-card">
             <div class="corner-tl"></div><div class="corner-tr"></div>
             <div class="corner-bl"></div><div class="corner-br"></div>
-            <div class="forgot-icon">🔒</div>
+            <div class="forgot-icon"></div>
             <div class="forgot-title">FORGOT PASSWORD</div>
             <div class="forgot-subtitle">// recover access to your account</div>
         </div>
@@ -139,8 +139,8 @@ def render():
         """, unsafe_allow_html=True)
 
         with st.form("forgot_password_form"):
-            email = st.text_input("📧 Email Address")
-            submitted = st.form_submit_button("📨 SEND RESET LINK", use_container_width=True)
+            email = st.text_input(" Email Address")
+            submitted = st.form_submit_button("SEND RESET LINK", use_container_width=True)
 
         if submitted:
             if not email.strip():

@@ -171,7 +171,7 @@ def render():
             <div class="header-title">DASHBOARD</div>
             <div class="header-sub">// Candidate Portal</div>
         </div>
-        <div class="user-badge">👤 {email}</div>
+        <div class="user-badge"> {email}</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -179,17 +179,17 @@ def render():
     st.markdown(f"""
     <div class="stat-grid">
         <div class="stat-card">
-            <div class="stat-icon">📄</div>
+            <div class="stat-icon"></div>
             <div class="stat-label">My Resumes</div>
             <div class="stat-number">{resume_count}</div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon">📨</div>
+            <div class="stat-icon"></div>
             <div class="stat-label">Applications</div>
             <div class="stat-number">{application_count}</div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon">💼</div>
+            <div class="stat-icon"></div>
             <div class="stat-label">Available Jobs</div>
             <div class="stat-number">{job_count}</div>
         </div>
@@ -203,27 +203,27 @@ def render():
 
     st.markdown("""
     <div class="action-grid">
-        <div class="action-card"><div class="action-icon">💼</div><div class="action-label">Browse Jobs</div></div>
-        <div class="action-card"><div class="action-icon">📤</div><div class="action-label">Upload Resume</div></div>
-        <div class="action-card"><div class="action-icon">📋</div><div class="action-label">My Applications</div></div>
-        <div class="action-card"><div class="action-icon">👤</div><div class="action-label">My Profile</div></div>
+        <div class="action-card"><div class="action-icon"></div><div class="action-label">Browse Jobs</div></div>
+        <div class="action-card"><div class="action-icon"></div><div class="action-label">Upload Resume</div></div>
+        <div class="action-card"><div class="action-icon"></div><div class="action-label">My Applications</div></div>
+        <div class="action-card"><div class="action-icon"></div><div class="action-label">My Profile</div></div>
     </div>
     """, unsafe_allow_html=True)
 
     # Buttons in a 2x2 grid on mobile via st.columns (Streamlit handles this better at 2 cols)
     b1, b2 = st.columns(2)
     with b1:
-        if st.button("💼 Browse Jobs", key="go_jobs", use_container_width=True):
+        if st.button(" Browse Jobs", key="go_jobs", use_container_width=True):
             st.session_state.page = "Jobs"
             st.rerun()
     with b2:
-        if st.button("📤 Upload Resume", key="go_resume", use_container_width=True):
+        if st.button(" Upload Resume", key="go_resume", use_container_width=True):
             st.session_state.page = "Upload Resume"
             st.rerun()
 
     b3, b4 = st.columns(2)
     with b3:
-        if st.button("📋 My Applications", key="go_apps", use_container_width=True):
+        if st.button(" My Applications", key="go_apps", use_container_width=True):
             st.session_state.page = "Applications"
             st.rerun()
     with b4:
@@ -247,7 +247,7 @@ def render():
                 st.markdown(f"""
                 <div class="app-card">
                     <div class="app-header">
-                        <div class="app-job">💼 Job #{app.get('job_id', 'N/A')} — Applied {str(app.get('applied_at', ''))[:10]}</div>
+                        <div class="app-job"> Job #{app.get('job_id', 'N/A')} — Applied {str(app.get('applied_at', ''))[:10]}</div>
                         <div class="app-date">{str(app.get('applied_at', ''))[:10]}</div>
                     </div>
                     <div class="app-body">

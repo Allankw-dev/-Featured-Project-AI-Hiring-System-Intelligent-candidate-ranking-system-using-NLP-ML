@@ -91,7 +91,7 @@ def render():
     </style>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="page-title">📨 My Applications</div>', unsafe_allow_html=True)
+    st.markdown('<div class="page-title"> My Applications</div>', unsafe_allow_html=True)
     st.markdown(
         '<div class="page-subtitle">Apply for open jobs using your uploaded resumes and track your submitted applications.</div>',
         unsafe_allow_html=True
@@ -186,7 +186,7 @@ def render():
         st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
-    st.markdown("### 📂 My Submitted Applications")
+    st.markdown("###  My Submitted Applications")
 
     apps_response = my_applications()
     if apps_response.status_code == 200:

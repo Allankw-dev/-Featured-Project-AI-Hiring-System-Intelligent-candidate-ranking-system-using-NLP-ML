@@ -209,7 +209,7 @@ def render():
                         key=f"resume_{job['id']}",
                         label_visibility="collapsed",
                     )
-                    if st.button("🚀 Apply", key=f"apply_{job['id']}", use_container_width=True):
+                    if st.button(" Apply", key=f"apply_{job['id']}", use_container_width=True):
                         resume_id = resume_options[selected_resume]
                         apply_response = apply_to_job(job["id"], resume_id)
                         if apply_response.status_code in [200, 201]:

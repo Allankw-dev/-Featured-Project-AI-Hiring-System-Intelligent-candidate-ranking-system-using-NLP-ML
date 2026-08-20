@@ -88,7 +88,7 @@ def render():
         </style>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="title-text">📄 Upload Resume</div>', unsafe_allow_html=True)
+    st.markdown('<div class="title-text"> Upload Resume</div>', unsafe_allow_html=True)
     st.markdown(
         '<div class="subtitle-text">Upload your resume in PDF or TXT format and manage your submissions easily.</div>',
         unsafe_allow_html=True
@@ -142,7 +142,7 @@ def render():
 
         st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("### 📁 My Resumes")
+    st.markdown("###  My Resumes")
 
     response = my_resumes()
     if response.status_code == 200:

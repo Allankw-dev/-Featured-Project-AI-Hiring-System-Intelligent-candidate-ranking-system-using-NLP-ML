@@ -217,16 +217,16 @@ def render():
             <div class="corner-tr"></div>
             <div class="corner-bl"></div>
             <div class="corner-br"></div>
-            <div class="login-icon">🔐</div>
+            <div class="login-icon"></div>
             <div class="login-title">LOG IN</div>
             <div class="login-subtitle">// access your account</div>
         </div>
         """, unsafe_allow_html=True)
 
         with st.form("login_form"):
-            email = st.text_input("📧 Email")
-            password = st.text_input("🔑 Password", type="password")
-            submitted = st.form_submit_button("⚡ LOG IN", use_container_width=True)
+            email = st.text_input(" Email")
+            password = st.text_input(" Password", type="password")
+            submitted = st.form_submit_button(" LOG IN", use_container_width=True)
 
         if submitted:
             if not email or not password:

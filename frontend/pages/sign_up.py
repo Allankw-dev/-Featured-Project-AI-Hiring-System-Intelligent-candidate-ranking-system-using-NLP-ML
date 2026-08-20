@@ -118,16 +118,16 @@ def render():
 
             col1, col2 = st.columns(2)
             with col1:
-                password = st.text_input("🔑 Password", type="password")
+                password = st.text_input(" Password", type="password")
             with col2:
-                confirm_password = st.text_input("🔑 Confirm Password", type="password")
+                confirm_password = st.text_input(" Confirm Password", type="password")
 
             sex = st.selectbox("⚧ Gender", ["Male", "Female", "Other"])
-            submitted = st.form_submit_button("⚡ CREATE ACCOUNT", use_container_width=True)
+            submitted = st.form_submit_button(" CREATE ACCOUNT", use_container_width=True)
 
         if submitted:
             if not full_name or not email or not password or not confirm_password:
-                st.warning("⚠️ Please fill in all fields.")
+                st.warning(" Please fill in all fields.")
             elif password != confirm_password:
                 st.error("❌ Passwords do not match.")
             else:
