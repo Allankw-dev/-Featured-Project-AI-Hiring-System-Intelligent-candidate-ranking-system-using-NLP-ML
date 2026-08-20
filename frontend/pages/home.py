@@ -10,6 +10,26 @@ def render():
         st.session_state.page = nav_target
         st.rerun()
 
+    # ── LISTENER RUNNING IN THE TOP-LEVEL DOCUMENT ──
+    # The iframe below is sandboxed by Streamlit, so target="_top" links get
+    # silently blocked. Instead the iframe posts a message up to this
+    # top-level listener, which performs the real navigation.
+    st.markdown("""
+    <script>
+    (function() {
+        if (window.__navListenerAttached) return;
+        window.__navListenerAttached = true;
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'streamlit-nav' && event.data.page) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('nav', event.data.page);
+                window.location.href = url.toString();
+            }
+        });
+    })();
+    </script>
+    """, unsafe_allow_html=True)
+
     result = components.html("""
     <!DOCTYPE html>
     <html>
@@ -249,8 +269,8 @@ def render():
                     <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">AI Active</div></div>
                 </div>
                 <div class="btn-row">
-                    <a class="btn btn-primary" href="?nav=Sign Up" target="_top">🚀 Get Started — Free</a>
-                    <a class="btn btn-secondary" href="?nav=Login" target="_top">🔐 Login</a>
+                    <a class="btn btn-primary" href="javascript:void(0)" onclick="navigateTo('Sign Up')">🚀 Get Started — Free</a>
+                    <a class="btn btn-secondary" href="javascript:void(0)" onclick="navigateTo('Login')">🔐 Login</a>
                 </div>
             </div>
 
@@ -294,14 +314,18 @@ def render():
             <div class="cta-title">Ready to Transform Your Hiring?</div>
             <div class="cta-text">Join the future of recruitment. Set up in minutes, hire better forever.</div>
             <div class="cta-btn-row">
-                <a class="btn btn-primary" href="?nav=Sign Up" target="_top"> Create Free Account</a>
-                <a class="btn btn-secondary" href="?nav=Login" target="_top"> Sign In</a>
-                <a class="btn btn-secondary" href="?nav=Jobs" target="_top"> Browse Jobs</a>
+                <a class="btn btn-primary" href="javascript:void(0)" onclick="navigateTo('Sign Up')"> Create Free Account</a>
+                <a class="btn btn-secondary" href="javascript:void(0)" onclick="navigateTo('Login')"> Sign In</a>
+                <a class="btn btn-secondary" href="javascript:void(0)" onclick="navigateTo('Jobs')"> Browse Jobs</a>
             </div>
         </div>
     </div>
 
     <script>
+        function navigateTo(page) {
+            window.parent.postMessage({ type: 'streamlit-nav', page: page }, '*');
+        }
+
         function sendHeight() {
             const h = document.body.scrollHeight;
             window.parent.postMessage({type: 'streamlit:setFrameHeight', height: h}, '*');
