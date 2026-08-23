@@ -1,7 +1,7 @@
 
 # 🤖 AI-Powered Hiring System.
 
-> An intelligent recruitment platform built with FastAPI, Streamlit, and PostgreSQL — powered by NLP and machine learning to automate resume screening, candidate scoring, and hiring decisions.
+> An intelligent recruitment platform built with FastAPI, Streamlit, and PostgreSQL — powered by NLP and machine learning to automate resume screening, candidate scoring, and hiring decisions..
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-FF4B4B?style=for-the-badge&logo=streamlit)](https://ai-powered-hiring-system.streamlit.app)
 [![Backend](https://img.shields.io/badge/Backend-Render-46E3B7?style=for-the-badge&logo=render)](https://ai-powered-hiring-system-using-fastapi-c1ya.onrender.com)
